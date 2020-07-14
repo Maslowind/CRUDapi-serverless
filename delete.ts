@@ -22,19 +22,13 @@ exports.handler = async (event: any) => {
     });
     await pool.query(`DELETE from public.crudts WHERE filename='${event.body.filename}' AND username='${username}'`)
         .then(async (res: any) => {
-            console.log(res.rowCount);
             pool.end();
             if (res.rowCount !== 0) {
                 await s3.deleteObject(s3Params, function (err: any, data: any) {
                     if (err) {
-                        console.error("s3", err);
-                        response = {
-                            statusCode: 400,
-                            body: err
-                        }
+                        response =  err;
                     } else {
                         response = {
-                            statusCode: 200,
                             message: "File deleted successfully.",
                             body: data
                         }
@@ -43,17 +37,14 @@ exports.handler = async (event: any) => {
             }
             else {
                 response = {
-                    statusCode: 400,
                     message: "Something went wrong.",
                     body: res
                 }
             }
         })
         .catch((err: any) => {
-            console.error("pool", err);
             pool.end();
             response = {
-                statusCode: 400,
                 message: "Something went wrong.",
                 body: err
             }

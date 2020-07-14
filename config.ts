@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
 interface dataOfPool {
     UserPoolId: string;
@@ -21,7 +21,9 @@ export let poolData: dataOfPool = {
 
 export let getUsername = (id_token: string) => {
     try {
-        return jwt.decode(id_token, { complete: true }).payload.name;
+        let jwtDecode: (string | { [key: string]: any; } | null) | { payload: { name: string } } = jwt.decode(id_token, { complete: true });
+        if (jwtDecode === null) return null;
+        else return (jwtDecode as any).payload.name;
     } catch{
         return null;
     }

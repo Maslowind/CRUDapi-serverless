@@ -20,11 +20,11 @@ exports.handler = async (event:any) => {
 
         return {
             statusCode: 200,
-            message: "File uploaded successfully.",
+            message: 'File uploaded successfully.',
         }
     }else return {
         statusCode: 400,
-        message: "Something went wrong.",
+        message: 'Something went wrong.',
     }
 
 }

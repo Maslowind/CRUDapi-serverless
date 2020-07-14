@@ -6,7 +6,6 @@ function getId() {
 };
 
 exports.handler = async (event: any) => {
-    console.log(event);
     let username = funcs.getUsername(event.headers.Authorization);
     let filename = `${username}&&${getId()}.png`;
 
@@ -22,11 +21,6 @@ exports.handler = async (event: any) => {
         ],
         Expires: 900
     };
-    let uploadURL = await s3.createPresignedPost(s3Params);
-    let res = {
-        statusCode: 200,
-        uploadURL
-    }
-    return res;
+    return await s3.createPresignedPost(s3Params);
 
 }

@@ -13,25 +13,20 @@ exports.handler = async (event: any) => {
     let result: Array<Result> = [];
     await pool.query(`SELECT * FROM public.crudts WHERE username = '${username}'`)
         .then((res: any) => {
-            console.log(res.rows);
             pool.end();
             res.rows.forEach(function (entry: any) {
                 result.push({ filename: entry.filename, url: entry.url })
             })
             response = {
-                statusCode: 200,
                 body: result
             }
         })
         .catch((err: any) => {
-            console.error(err);
             pool.end();
             response = {
-                statusCode: 400,
                 body: err
             };
         });
-        console.log(response)
     return response;
 
 }
