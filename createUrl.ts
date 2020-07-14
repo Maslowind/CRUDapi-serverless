@@ -6,8 +6,11 @@ function getId() {
 };
 
 exports.handler = async (event: any) => {
+    let contentType = event.body['content-type'].split('/')[1];
+    if (event.body['content-type'].split('/')[0] !== 'image')
+        return { message: `Content-type must be 'image/*'` }
     let username = funcs.getUsername(event.headers.Authorization);
-    let filename = `${username}&&${getId()}.png`;
+    let filename = `${username}&&${getId()}.${contentType}`;
 
     let s3 = new AWS.S3();
     const s3Params = {

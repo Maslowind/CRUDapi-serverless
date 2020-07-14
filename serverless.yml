@@ -60,7 +60,7 @@ functions:
     events:
       - http:
           path: createurl
-          method: get
+          method: post
           integration: lambda
           authorizer:
             type: COGNITO_USER_POOLS
