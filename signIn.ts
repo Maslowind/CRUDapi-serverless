@@ -1,46 +1,37 @@
-import * as funcs from './config';
 import { bodyOfAuth } from './config';
 import { APIGatewayEvent } from 'aws-lambda';
-const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
+const AWS = require('aws-sdk');
 require('cross-fetch/polyfill');
 
 interface ResultSignIn {
-    message: string;
-    accessToken?: string;
+    message?: string;
+    IdToken?: string;
     error?: string
 }
-interface CognitoUserSession {
-    idToken: { jwtToken: string }
+interface AuthenticationRes {
+    AuthenticationResult:{IdToken:string}
 }
 
 exports.handler = async (event: APIGatewayEvent) => {
     let eventBody = event.body as unknown as bodyOfAuth;
-    let authenticationData = {
-        Username: eventBody.email,
-        Password: eventBody.password,
-    };
-    let authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
-
-    let userPool = new AmazonCognitoIdentity.CognitoUserPool(funcs.poolData);
-    let userData = {
-        Username: eventBody.email,
-        Pool: userPool,
-    };
-    let res: ResultSignIn = { message: '' };
-    let cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-    return new Promise((resolve, reject) =>
-        cognitoUser.authenticateUser(authenticationDetails, {
-            onSuccess: function (result: CognitoUserSession) {
-                let accessToken = result.idToken.jwtToken;
-                res.message = "Successfully logged!";
-                res.accessToken = accessToken;
-                resolve(res)
-            },
-            onFailure: function (err: string) {
-                console.log(err)
-                res.message = "Something went wrong";
-                res.error = err;
-                reject(res);
-            },
-        }));
+    let cognito = new AWS.CognitoIdentityServiceProvider();
+    const payload = {
+        AuthFlow: "USER_PASSWORD_AUTH",
+        ClientId: String(process.env.CLIENT_ID),
+        AuthParameters: {
+            USERNAME: eventBody.email,
+            PASSWORD: eventBody.password,
+        }
+    }
+    let result: ResultSignIn = {};
+    await cognito.initiateAuth(payload).promise()
+        .then((res: AuthenticationRes) => {
+            result.message = "Successfully logged"
+            result.IdToken = res.AuthenticationResult.IdToken;
+        })
+        .catch((err: string) => {
+            result.message = "Something went wrong"
+            result.error = err;
+        })
+    return result;
 };
