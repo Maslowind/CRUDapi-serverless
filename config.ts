@@ -4,6 +4,19 @@ interface dataOfPool {
     UserPoolId: string;
     ClientId: string;
 }
+export interface bodyOfAuth {
+    email: string;
+    password: string;
+}
+export interface resOfRDS {
+    rowCount: Number;
+    rows: [dbStructure];
+}
+export interface dbStructure {
+    username?: String;
+    filename: string;
+    url: string;
+}
 
 
 export let poolConfig = {
@@ -17,6 +30,7 @@ export let poolData: dataOfPool = {
     UserPoolId: String(process.env.USER_POOL_ID), // Your user pool id here
     ClientId: String(process.env.CLIENT_ID), // Your client id here
 }
+
 
 
 export let getUsername = (id_token: string) => {

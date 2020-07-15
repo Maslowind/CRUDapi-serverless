@@ -1,20 +1,25 @@
 import * as funcs from './config';
+import { bodyOfAuth } from './config';
+import { APIGatewayEvent } from 'aws-lambda';
 const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 require('cross-fetch/polyfill');
 
-exports.handler = async (event: any) => {
+interface ResultSignUp {
+    user: { username: string }
+}
+exports.handler = async (event: APIGatewayEvent) => {
     let userPool = new AmazonCognitoIdentity.CognitoUserPool(funcs.poolData);
+    let eventBody = event.body as unknown as bodyOfAuth;
 
     let attributeList: any[] = [];
 
     let dataEmail = {
         Name: 'email',
-        Value: event.body.email,
+        Value: eventBody.email,
     };
-
     let dataName = {
         Name: 'name',
-        Value: event.body.email,
+        Value: eventBody.email,
     };
     let attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
     let attributeName = new AmazonCognitoIdentity.CognitoUserAttribute(dataName);
@@ -23,15 +28,15 @@ exports.handler = async (event: any) => {
     attributeList.push(attributeName);
 
     return new Promise((resolve, reject) =>
-        userPool.signUp(event.body.email, event.body.password, attributeList, null, function (err: any, result: any) {
+        userPool.signUp(eventBody.email, eventBody.password, attributeList, null, function (err: string, result: ResultSignUp) {
             if (err) {
                 console.error("err", err);
                 reject({ message: "Something went wrong", error: err });
                 return;
             }
+            console.log(result);
             let cognitoUser = result.user;
-            console.log('Username is ' + cognitoUser.getUsername());
-            resolve({ message: "User created", username: cognitoUser.getUsername() });
+            console.log('Username is ' + cognitoUser.username);
+            resolve({ message: "User created", username: cognitoUser.username });
         }));
 };
-

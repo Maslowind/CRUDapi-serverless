@@ -1,36 +1,43 @@
 import * as funcs from './config';
+import { bodyOfAuth } from './config';
+import { APIGatewayEvent } from 'aws-lambda';
 const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 require('cross-fetch/polyfill');
 
-interface Result {
+interface ResultSignIn {
     message: string;
     accessToken?: string;
-    error?: any
+    error?: string
+}
+interface CognitoUserSession {
+    idToken: { jwtToken: string }
 }
 
-exports.handler = async (event: any) => {
+exports.handler = async (event: APIGatewayEvent) => {
+    let eventBody = event.body as unknown as bodyOfAuth;
     let authenticationData = {
-        Username: event.body.email,
-        Password: event.body.password,
+        Username: eventBody.email,
+        Password: eventBody.password,
     };
     let authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
 
     let userPool = new AmazonCognitoIdentity.CognitoUserPool(funcs.poolData);
     let userData = {
-        Username: event.body.email,
+        Username: eventBody.email,
         Pool: userPool,
     };
-    let res: Result = { message: '' };
+    let res: ResultSignIn = { message: '' };
     let cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
     return new Promise((resolve, reject) =>
         cognitoUser.authenticateUser(authenticationDetails, {
-            onSuccess: function (result: any) {
-                let accessToken = result.getIdToken().getJwtToken();
+            onSuccess: function (result: CognitoUserSession) {
+                let accessToken = result.idToken.jwtToken;
                 res.message = "Successfully logged!";
                 res.accessToken = accessToken;
                 resolve(res)
             },
-            onFailure: function (err: any) {
+            onFailure: function (err: string) {
+                console.log(err)
                 res.message = "Something went wrong";
                 res.error = err;
                 reject(res);

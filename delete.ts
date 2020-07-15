@@ -1,37 +1,31 @@
 import * as funcs from './config';
+import { resOfRDS } from './config';
+import { APIGatewayEvent } from 'aws-lambda';
 const pg = require('pg');
 const AWS = require('aws-sdk');
 
-AWS.config = {
-    accessKeyId: process.env.ACCESS_ID,
-    secretAccessKey: process.env.SECRET_ID,
-};
+export interface bodyOfDelete {
+    filename: string;
+}
 
-exports.handler = async (event: any) => {
+exports.handler = async (event: APIGatewayEvent) => {
     let response;
+    let eventBody = event.body as unknown as bodyOfDelete;
 
     const pool = new pg.Pool(funcs.poolConfig);
     let username = funcs.getUsername(event.headers.Authorization);
     const s3Params = {
         Bucket: process.env.BUCKET_NAME,
-        Key: event.body.filename
+        Key: eventBody.filename
     };
-    const s3 = new AWS.S3({
-        accessKeyId: process.env.ACCESS_ID,
-        secretAccessKey: process.env.SECRET_ID
-    });
-    await pool.query(`DELETE from public.crudts WHERE filename='${event.body.filename}' AND username='${username}'`)
-        .then(async (res: any) => {
+    const s3 = new AWS.S3();
+    await pool.query(`DELETE from public.crudts WHERE filename='${eventBody.filename}' AND username='${username}'`)
+        .then(async (res: resOfRDS) => {
             pool.end();
             if (res.rowCount !== 0) {
-                await s3.deleteObject(s3Params, function (err: any, data: any) {
-                    if (err) {
-                        response =  err;
-                    } else {
-                        response = {
-                            message: "File deleted successfully.",
-                            body: data
-                        }
+                await s3.deleteObject(s3Params, () => {
+                    response = {
+                        message: "File deleted successfully."
                     }
                 }).promise()
             }
@@ -42,7 +36,7 @@ exports.handler = async (event: any) => {
                 }
             }
         })
-        .catch((err: any) => {
+        .catch((err: string) => {
             pool.end();
             response = {
                 message: "Something went wrong.",
