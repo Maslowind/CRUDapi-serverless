@@ -9,7 +9,6 @@ export interface bodyOfAddToDB {
 
 exports.handler = async (event: SNSEvent) => {
     let eventRecords = event.Records[0] as unknown as bodyOfAddToDB;
-
     let filename = eventRecords.s3.object.key;
     let decodedFilename = decodeURIComponent(filename);
     let generatedURL = `https://${process.env.BUCKET_NAME}.s3.amazonaws.com/${filename}`

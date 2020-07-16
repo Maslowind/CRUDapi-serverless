@@ -7,7 +7,6 @@ const AWS = require('aws-sdk');
 export interface bodyOfDelete {
     filename: string;
 }
-
 exports.handler = async (event: APIGatewayEvent) => {
     let response;
     let eventBody = event.body as unknown as bodyOfDelete;
