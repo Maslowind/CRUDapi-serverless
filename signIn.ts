@@ -11,7 +11,6 @@ interface ResultSignIn {
 interface AuthenticationRes {
     AuthenticationResult:{IdToken:string}
 }
-
 exports.handler = async (event: APIGatewayEvent) => {
     let eventBody = event.body as unknown as bodyOfAuth;
     let cognito = new AWS.CognitoIdentityServiceProvider();
