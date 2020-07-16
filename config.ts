@@ -1,14 +1,14 @@
 import jwt from 'jsonwebtoken';
 
-export interface bodyOfAuth {
+export interface BodyOfAuth {
     email: string;
     password: string;
 }
-export interface resOfRDS {
+export interface ResOfRDS {
     rowCount: Number;
-    rows: [dbStructure];
+    rows: [DbStructure];
 }
-export interface dbStructure {
+export interface DbStructure {
     username?: String;
     filename: string;
     url: string;
@@ -23,14 +23,10 @@ export let poolConfig = {
     database: process.env.RDS_DB
 };
 
-
-
 export let getUsername = (id_token: string) => {
     try {
-        let jwtDecode: (string | { [key: string]: any; } | null) | { payload: { email: string } } = jwt.decode(id_token, { complete: true });
-        console.log(jwtDecode)
-        if (jwtDecode === null) return null;
-        else return (jwtDecode as any).payload.email;
+        let jwtDecode = jwt.decode(id_token, { complete: true }) as null | { payload: { email: string } };
+        return jwtDecode?.payload.email;
     } catch{
         return null;
     }

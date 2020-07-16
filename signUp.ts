@@ -1,10 +1,10 @@
-import { bodyOfAuth } from './config';
+import { BodyOfAuth } from './config';
 import { APIGatewayEvent } from 'aws-lambda';
 const AWS = require('aws-sdk');
 require('cross-fetch/polyfill');
 
 exports.handler = async (event: APIGatewayEvent) => {
-    let eventBody = event.body as unknown as bodyOfAuth;
+    let eventBody = event.body as unknown as BodyOfAuth;
     let cognito = new AWS.CognitoIdentityServiceProvider();
     let result: any = {};
     console.log(cognito);

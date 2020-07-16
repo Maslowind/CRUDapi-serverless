@@ -1,14 +1,14 @@
 import * as funcs from './config';
-import { resOfRDS} from './config';
+import { ResOfRDS} from './config';
 import { SNSEvent } from 'aws-lambda';
 const pg = require('pg');
 
-export interface bodyOfAddToDB {
+export interface BodyOfAddToDB {
     s3: { object: { key: string } };
 }
 
 exports.handler = async (event: SNSEvent) => {
-    let eventRecords = event.Records[0] as unknown as bodyOfAddToDB;
+    let eventRecords = event.Records[0] as unknown as BodyOfAddToDB;
 
     let filename = eventRecords.s3.object.key;
     let decodedFilename = decodeURIComponent(filename);
@@ -17,7 +17,7 @@ exports.handler = async (event: SNSEvent) => {
     let username = decodedFilename.split('&&')[0];
     if (username !== undefined) {
         await pool.query(`INSERT INTO crudts (username, filename, url) VALUES ('${username}', '${decodedFilename}', '${generatedURL}')`) //test insert to table
-            .then((res: resOfRDS) => {
+            .then((res: ResOfRDS) => {
                 console.log(res);
                 pool.end();
             })

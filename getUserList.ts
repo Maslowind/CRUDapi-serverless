@@ -1,5 +1,5 @@
 import * as funcs from './config';
-import { dbStructure, resOfRDS} from './config';
+import { DbStructure, ResOfRDS} from './config';
 import { APIGatewayEvent } from 'aws-lambda';
 const pg = require('pg');
 
@@ -7,12 +7,12 @@ export const handler = async (event: APIGatewayEvent) => {
     let response;
     const pool = new pg.Pool(funcs.poolConfig);
     let username = funcs.getUsername(event.headers.Authorization);
-    let result: Array<dbStructure> = [];
+    let result: Array<DbStructure> = [];
     await pool.query(`SELECT * FROM public.crudts WHERE username = '${username}'`)
-        .then((res: resOfRDS) => {
+        .then((res: ResOfRDS) => {
             console.log(res)
             pool.end();
-            res.rows.forEach(function (entry: dbStructure) {
+            res.rows.forEach(function (entry: DbStructure) {
                 result.push({ filename: entry.filename, url: entry.url })
             })
             response = {

@@ -1,16 +1,16 @@
 import * as funcs from './config';
-import { resOfRDS } from './config';
+import { ResOfRDS } from './config';
 import { APIGatewayEvent } from 'aws-lambda';
 const pg = require('pg');
 const AWS = require('aws-sdk');
 
-export interface bodyOfDelete {
+export interface BodyOfDelete {
     filename: string;
 }
 
 exports.handler = async (event: APIGatewayEvent) => {
     let response;
-    let eventBody = event.body as unknown as bodyOfDelete;
+    let eventBody = event.body as unknown as BodyOfDelete;
 
     const pool = new pg.Pool(funcs.poolConfig);
     let username = funcs.getUsername(event.headers.Authorization);
@@ -20,7 +20,7 @@ exports.handler = async (event: APIGatewayEvent) => {
     };
     const s3 = new AWS.S3();
     await pool.query(`DELETE from public.crudts WHERE filename='${eventBody.filename}' AND username='${username}'`)
-        .then(async (res: resOfRDS) => {
+        .then(async (res: ResOfRDS) => {
             pool.end();
             if (res.rowCount !== 0) {
                 await s3.deleteObject(s3Params, () => {

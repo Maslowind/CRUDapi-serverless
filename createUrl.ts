@@ -6,12 +6,12 @@ function getId() {
     return Math.random().toString(9).substr(2, 15);
 };
 
-export interface bodyOfCreateUrl {
+export interface BodyOfCreateUrl {
     'content-type': string;
 }
 
 exports.handler = async (event: APIGatewayEvent) => {
-    let eventBody = event.body as unknown as bodyOfCreateUrl;
+    let eventBody = event.body as unknown as BodyOfCreateUrl;
     let contentType = eventBody['content-type'].split('/')[1];
     if (eventBody['content-type'].split('/')[0] !== 'image')
         return { message: `Content-type must be 'image/*'` }
