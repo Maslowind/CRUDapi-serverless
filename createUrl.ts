@@ -11,7 +11,6 @@ export interface bodyOfCreateUrl {
 }
 
 exports.handler = async (event: APIGatewayEvent) => {
-    console.log(event);
     let eventBody = event.body as unknown as bodyOfCreateUrl;
     let contentType = eventBody['content-type'].split('/')[1];
     if (eventBody['content-type'].split('/')[0] !== 'image')

@@ -4,7 +4,6 @@ const AWS = require('aws-sdk');
 require('cross-fetch/polyfill');
 
 exports.handler = async (event: APIGatewayEvent) => {
-    console.log(event);
     let eventBody = event.body as unknown as bodyOfAuth;
     let cognito = new AWS.CognitoIdentityServiceProvider();
     let result: any = {};

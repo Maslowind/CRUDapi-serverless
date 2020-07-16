@@ -4,7 +4,6 @@ import { APIGatewayEvent } from 'aws-lambda';
 const pg = require('pg');
 
 export const handler = async (event: APIGatewayEvent) => {
-    console.log(event);
     let response;
     const pool = new pg.Pool(funcs.poolConfig);
     let username = funcs.getUsername(event.headers.Authorization);
