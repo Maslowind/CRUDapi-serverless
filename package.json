@@ -16,6 +16,7 @@
     "typescript": "^3.9.6"
   },
   "dependencies": {
+    "@hapi/boom": "^9.1.0",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.3.0"
   }
