@@ -17,6 +17,8 @@
   },
   "dependencies": {
     "@hapi/boom": "^9.1.0",
+    "@types/aws-sdk": "^2.7.0",
+    "@types/pg": "^7.14.4",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.3.0"
   }

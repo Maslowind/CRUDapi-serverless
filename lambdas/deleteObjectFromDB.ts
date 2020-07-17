@@ -1,9 +1,10 @@
 import * as funcs from '../config';
 import { ErrorInterface } from '../config';
 import { APIGatewayEvent } from 'aws-lambda';
-const pg = require('pg');
-const AWS = require('aws-sdk');
-const Boom = require('@hapi/boom');
+import pg from 'pg';
+import AWS from 'aws-sdk';
+import Boom from '@hapi/boom';
+import { DeleteObjectRequest } from 'aws-sdk/clients/s3';
 
 export interface BodyOfDelete {
     filename: string;
@@ -14,8 +15,8 @@ exports.handler = async (event: APIGatewayEvent) => {
     const pool = new pg.Pool(funcs.poolConfig);
     let username = funcs.getUsername(event.headers.Authorization);
 
-    const s3Params = {
-        Bucket: process.env.BUCKET_NAME,
+    const s3Params: DeleteObjectRequest = {
+        Bucket: process.env.BUCKET_NAME!,
         Key: eventBody.filename
     };
     const s3 = new AWS.S3();

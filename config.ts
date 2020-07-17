@@ -1,11 +1,12 @@
 import jwt from 'jsonwebtoken';
+import { PoolConfig } from 'pg';
 
 export interface BodyOfAuth {
     email: string;
     password: string;
 }
 export interface DbStructure {
-    username?: String;
+    username?: string;
     filename: string;
     url: string;
 }
@@ -13,13 +14,12 @@ export interface ErrorInterface {
     message:string
 }
 
-
-export let poolConfig = {
-    host: process.env.RDS_HOSTNAME,
-    user: process.env.RDS_USERNAME,
-    password: process.env.RDS_PASSWORD,
-    port: process.env.RDS_PORT,
-    database: process.env.RDS_DB
+export let poolConfig: PoolConfig = {
+    host: process.env.RDS_HOSTNAME!,
+    user: process.env.RDS_USERNAME!,
+    password: process.env.RDS_PASSWORD!,
+    port: Number(process.env.RDS_PORT) ,
+    database: process.env.RDS_DB!
 };
 
 export let getUsername = (id_token: string) => {

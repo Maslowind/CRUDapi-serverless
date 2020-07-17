@@ -1,7 +1,7 @@
 import { BodyOfAuth, ErrorInterface } from '../config';
 import { APIGatewayEvent } from 'aws-lambda';
-const AWS = require('aws-sdk');
-const Boom = require('@hapi/boom');
+import AWS from 'aws-sdk';
+import Boom from '@hapi/boom';
 
 exports.handler = async (event: APIGatewayEvent) => {
     let eventBody = event.body as unknown as BodyOfAuth;
@@ -9,7 +9,7 @@ exports.handler = async (event: APIGatewayEvent) => {
 
     const payload = {
         AuthFlow: "USER_PASSWORD_AUTH",
-        ClientId: String(process.env.CLIENT_ID),
+        ClientId: process.env.CLIENT_ID!,
         AuthParameters: {
             USERNAME: eventBody.email,
             PASSWORD: eventBody.password,

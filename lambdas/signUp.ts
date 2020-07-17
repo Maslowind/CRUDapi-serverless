@@ -1,14 +1,15 @@
 import { BodyOfAuth, ErrorInterface } from '../config';
 import { APIGatewayEvent } from 'aws-lambda';
-const AWS = require('aws-sdk');
-const Boom = require('@hapi/boom');
+import AWS from 'aws-sdk';
+import Boom from '@hapi/boom';
+import { SignUpRequest } from 'aws-sdk/clients/cognitoidentityserviceprovider';
 
 exports.handler = async (event: APIGatewayEvent) => {
     let eventBody = event.body as unknown as BodyOfAuth;
     let cognito = new AWS.CognitoIdentityServiceProvider();
 
-    const payload = {
-        ClientId: String(process.env.CLIENT_ID),
+    const payload:SignUpRequest = {
+        ClientId: process.env.CLIENT_ID!,
         Username: eventBody.email,
         Password: eventBody.password,
     }

@@ -1,25 +1,26 @@
 import * as funcs from '../config';
 import { APIGatewayEvent } from 'aws-lambda';
-const AWS = require('aws-sdk');
-const Boom = require('@hapi/boom');
+import AWS from 'aws-sdk';
+import Boom from '@hapi/boom';
 
 function getId() {
     return Math.random().toString(9).substr(2, 15);
 };
 
 export interface BodyOfCreateUrl {
-    'content-type': string;
+    contentType: string;
 }
 
 exports.handler = async (event: APIGatewayEvent) => {
     let eventBody = event.body as unknown as BodyOfCreateUrl;
-    let contentType = eventBody['content-type'].split('/')[1];
-    if (eventBody['content-type'].split('/')[0] !== 'image') {
+    let contentType = eventBody.contentType;
+    let contentTypeArray = contentType.split('/');
+    let type = contentTypeArray[1];
+    if (contentTypeArray[0] !== 'image') {
         throw Boom.badRequest(`Content-type must be 'image/*'`);
     }
-
     let username = funcs.getUsername(event.headers.Authorization);
-    let filename = `${username}&&${getId()}.${contentType}`;
+    let filename = `${username}&&${getId()}.${type}`;
 
     let s3 = new AWS.S3();
     const s3Params = {
@@ -27,12 +28,13 @@ exports.handler = async (event: APIGatewayEvent) => {
         Fields: {
             acl: 'public-read',
             key: filename,
+            'Content-Type':contentType
         },
         Conditions: [
             ["content-length-range", 0, 10000000], // 10 Mb                    
         ],
         Expires: 900
     };
-    return await s3.createPresignedPost(s3Params);
+    return s3.createPresignedPost(s3Params);
 
 }
