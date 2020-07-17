@@ -20,7 +20,7 @@ export let poolConfig = {
     password: process.env.RDS_PASSWORD,
     port: process.env.RDS_PORT,
     database: process.env.RDS_DB
-};5
+};
 
 export let getUsername = (id_token: string) => {
     try {

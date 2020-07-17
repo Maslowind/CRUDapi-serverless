@@ -55,40 +55,40 @@ functions:
           path: signin
           method: post
           integration: lambda
-  createUrl:
+  createPresignedPost:
     handler:   lambdas/createPresignedPost.handler    
     events:
       - http:
-          path: createurl
+          path: createPresignedPost
           method: post
           integration: lambda
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
-  addToDB:
+  writeObjectToDB:
     handler:   lambdas/writeObjectToDB.handler    
     events:
       - s3:
           bucket: ${self:custom.s3BucketName}
           event: s3:ObjectCreated:*
           existing: true  
-  getUserList:
+  getObjectsList:
     handler: lambdas/getObjectsList.handler    
     events:
       - http:
-          path: getuserlist
+          path: getObjectsList
           method: get
           integration: lambda
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer  
-  delete:
+  deleteObjectFromDB:
     handler: lambdas/deleteObjectFromDB.handler    
     events:
       - http:
-          path: delete
+          path: deleteObjectFromDB
           method: post
           integration: lambda
           authorizer:

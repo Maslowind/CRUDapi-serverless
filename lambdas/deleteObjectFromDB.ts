@@ -30,8 +30,8 @@ exports.handler = async (event: APIGatewayEvent) => {
     console.log(deleteRes.rowCount);
     if (deleteRes.rowCount === 0) {
         throw Boom.badRequest('Object not found');
-    } else {
-        await s3.deleteObject(s3Params).promise();
-        return { message: "File deleted successfully" };
     }
+    await s3.deleteObject(s3Params).promise();
+    return { message: "File deleted successfully" };
+
 }
