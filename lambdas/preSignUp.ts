@@ -1,4 +1,4 @@
-import { CognitoUserPoolEvent} from 'aws-lambda';
+import { CognitoUserPoolEvent } from 'aws-lambda';
 
 
 exports.handler = async (event: CognitoUserPoolEvent) => {

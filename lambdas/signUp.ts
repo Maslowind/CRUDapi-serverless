@@ -1,4 +1,4 @@
-import { BodyOfAuth } from './config';
+import { BodyOfAuth, ErrorInterface } from '../config';
 import { APIGatewayEvent } from 'aws-lambda';
 const AWS = require('aws-sdk');
 const Boom = require('@hapi/boom');
@@ -8,17 +8,12 @@ exports.handler = async (event: APIGatewayEvent) => {
     let cognito = new AWS.CognitoIdentityServiceProvider();
 
     const payload = {
-        AuthFlow: "USER_PASSWORD_AUTH",
         ClientId: String(process.env.CLIENT_ID),
-        AuthParameters: {
-            USERNAME: eventBody.email,
-            PASSWORD: eventBody.password,
-        }
+        Username: eventBody.email,
+        Password: eventBody.password,
     }
-
-    let result = await cognito.initiateAuth(payload).promise()
-        .catch((err: string) => {
-            return Boom.boomify(err, { statusCode: 400 });
+    return await cognito.signUp(payload).promise()
+        .catch((err: ErrorInterface) => {
+            throw Boom.badRequest(err.message);
         })
-    return result;
 };

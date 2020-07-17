@@ -1,4 +1,4 @@
-import * as funcs from './config';
+import * as funcs from '../config';
 import { SNSEvent } from 'aws-lambda';
 const pg = require('pg');
 

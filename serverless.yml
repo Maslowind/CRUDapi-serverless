@@ -35,28 +35,28 @@ custom:
 
 functions:
   preSignUp:
-    handler: preSignUp.handler
+    handler: lambdas/preSignUp.handler
     events:
     - cognitoUserPool:
           pool: ${self:custom.userPoolName}
           trigger: PreSignUp
           existing: true
   signUp:
-    handler: signUp.handler   
+    handler: lambdas/signUp.handler   
     events:
       - http:
           path: signup
           method: post
           integration: lambda
   signIn:
-    handler: signIn.handler   
+    handler: lambdas/signIn.handler   
     events:
       - http:
           path: signin
           method: post
           integration: lambda
   createUrl:
-    handler:   createUrl.handler    
+    handler:   lambdas/createPresignedPost.handler    
     events:
       - http:
           path: createurl
@@ -67,14 +67,14 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
   addToDB:
-    handler:   addToDB.handler    
+    handler:   lambdas/writeObjectToDB.handler    
     events:
       - s3:
           bucket: ${self:custom.s3BucketName}
           event: s3:ObjectCreated:*
           existing: true  
   getUserList:
-    handler: getUserList.handler    
+    handler: lambdas/getObjectsList.handler    
     events:
       - http:
           path: getuserlist
@@ -85,7 +85,7 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer  
   delete:
-    handler: delete.handler    
+    handler: lambdas/deleteObjectFromDB.handler    
     events:
       - http:
           path: delete

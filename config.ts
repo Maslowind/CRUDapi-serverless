@@ -9,6 +9,9 @@ export interface DbStructure {
     filename: string;
     url: string;
 }
+export interface ErrorInterface {
+    message:string
+}
 
 
 export let poolConfig = {
