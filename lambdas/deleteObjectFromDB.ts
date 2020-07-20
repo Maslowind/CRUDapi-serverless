@@ -27,8 +27,6 @@ exports.handler = async (event: APIGatewayEvent) => {
         });
 
     pool.end();
-    console.log(deleteRes);
-    console.log(deleteRes.rowCount);
     if (deleteRes.rowCount === 0) {
         throw Boom.badRequest('Object not found');
     }

@@ -1,6 +1,6 @@
 import * as funcs from '../config';
 import { SNSEvent } from 'aws-lambda';
-const pg = require('pg');
+import pg from 'pg';
 
 export interface BodyOfAddToDB {
     s3: { object: { key: string } };
