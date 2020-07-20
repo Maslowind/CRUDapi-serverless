@@ -2,7 +2,6 @@ import * as funcs from '../config';
 import { ErrorInterface } from '../config';
 import { APIGatewayEvent } from 'aws-lambda';
 import pg from 'pg';
-import AWS from 'aws-sdk';
 import Boom from '@hapi/boom';
 import { DeleteObjectRequest } from 'aws-sdk/clients/s3';
 
@@ -19,7 +18,7 @@ exports.handler = async (event: APIGatewayEvent) => {
         Bucket: process.env.BUCKET_NAME!,
         Key: eventBody.filename
     };
-    const s3 = new AWS.S3();
+    const s3 = funcs.s3;
 
     let deleteRes = await pool.query(`DELETE from public.crudts WHERE filename='${eventBody.filename}' AND username='${username}'`)
         .catch((err: ErrorInterface) => {

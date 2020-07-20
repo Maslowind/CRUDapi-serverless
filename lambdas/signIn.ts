@@ -1,11 +1,11 @@
+import * as funcs from '../config';
 import { BodyOfAuth, ErrorInterface } from '../config';
 import { APIGatewayEvent } from 'aws-lambda';
-import AWS from 'aws-sdk';
 import Boom from '@hapi/boom';
 
 exports.handler = async (event: APIGatewayEvent) => {
     let eventBody = event.body as unknown as BodyOfAuth;
-    let cognito = new AWS.CognitoIdentityServiceProvider();
+    let cognito = funcs.cognito;
 
     const payload = {
         AuthFlow: "USER_PASSWORD_AUTH",

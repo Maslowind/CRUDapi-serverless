@@ -1,5 +1,11 @@
 import jwt from 'jsonwebtoken';
 import { PoolConfig } from 'pg';
+import AWS from 'aws-sdk';
+
+export let cognito = new AWS.CognitoIdentityServiceProvider();
+
+export let s3 = new AWS.S3();
+    
 
 export interface BodyOfAuth {
     email: string;

@@ -1,6 +1,5 @@
 import * as funcs from '../config';
 import { APIGatewayEvent } from 'aws-lambda';
-import AWS from 'aws-sdk';
 import Boom from '@hapi/boom';
 
 function getId() {
@@ -22,13 +21,13 @@ exports.handler = async (event: APIGatewayEvent) => {
     let username = funcs.getUsername(event.headers.Authorization);
     let filename = `${username}&&${getId()}.${type}`;
 
-    let s3 = new AWS.S3();
+    let s3 = funcs.s3;
     const s3Params = {
         Bucket: process.env.BUCKET_NAME,
         Fields: {
             acl: 'public-read',
             key: filename,
-            'Content-Type':contentType
+            'Content-Type': contentType
         },
         Conditions: [
             ["content-length-range", 0, 10000000], // 10 Mb                    
